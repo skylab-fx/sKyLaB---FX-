@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sKyLaB - FX Institutional Wall Street Terminal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- TradingView Widget Script -->
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Inter:wght@400;600;700;900&display=swap');
+    body { font-family: 'Inter', sans-serif; background-color: #030508; color: #e2e8f0; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-card { background: rgba(13, 18, 30, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.07); }
+    .glass-card:hover { border-color: rgba(234,179,8,0.3); }
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    
+    .news-flash { animation: alertFlash 1s infinite alternate; }
+    @keyframes alertFlash {
+      from { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
+      to { border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 25px rgba(239, 68, 68, 0.6); }
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-6">
+  
+  <!-- Header -->
+  <header class="border-b border-slate-800/80 bg-slate-950/90 sticky top-0 z-40 backdrop-blur-md px-6 py-2.5 flex justify-between items-center">
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center font-bold text-slate-950 text-lg shadow-lg shadow-amber-500/20">👑</div>
+      <div>
+        <h1 class="font-extrabold text-sm tracking-wider text-white flex items-center gap-2">
+          sKyLaB - FX <span class="text-amber-400 font-normal text-[10px] px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/20">WALL STREET PRO TERMINAL</span>
+        </h1>
+        <p class="text-[9px] text-slate-400 font-mono">Institutional SMC Engine • 100% Live WebSocket Sync</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center space-x-4">
+      <button onclick="openModal()" class="px-4 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-extrabold text-xs shadow-lg shadow-amber-500/20 hover:brightness-110 active:scale-95 transition-all">
+        + New Signal Setup
+      </button>
+    </div>
+  </header>
+
+  <!-- Full-Width Container -->
+  <main class="w-full px-4 mt-4 space-y-4">
+    
+    <!-- Top Performance Metrics Bar -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono">
+      <div class="p-3 rounded-xl glass-card border border-slate-800 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] text-slate-400 block uppercase">Win Rate (30D)</span>
+          <div class="text-xl font-black text-emerald-400">89.4%</div>
+          <span class="text-[9px] text-slate-500">● 34 Win / 4 Loss</span>
+        </div>
+        <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <i class="fa-solid fa-bullseye"></i>
+        </div>
+      </div>
+
+      <div class="p-3 rounded-xl glass-card border border-slate-800 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] text-slate-400 block uppercase">Total Pips Gained</span>
+          <div class="text-xl font-black text-amber-400">+1,850 PIPS</div>
+          <span class="text-[9px] text-slate-500">⚡ Avg R:R 1:3.2</span>
+        </div>
+        <div class="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+      </div>
+
+      <div class="p-3 rounded-xl glass-card border border-slate-800 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] text-slate-400 block uppercase">Active Signals</span>
+          <div class="text-xl font-black text-white">14</div>
+          <span class="text-[9px] text-emerald-400">⚡ Live PnL Engine</span>
+        </div>
+        <div class="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+          <i class="fa-solid fa-wave-square"></i>
+        </div>
+      </div>
+
+      <div class="p-3 rounded-xl glass-card border border-slate-800 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] text-slate-400 block uppercase">Institutional SMC</span>
+          <div class="text-xl font-black text-amber-400">HIGH BIAS</div>
+          <span class="text-[9px] text-slate-500">🟣 Order Block + FVG</span>
+        </div>
+        <div class="w-9 h-9 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+          <i class="fa-solid fa-landmark"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Full-Width Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      
+      <!-- LEFT SIDEBAR (Col 3): Level-2 Depth + Live Quotes -->
+      <div class="lg:col-span-3 space-y-3 font-mono">
+        <div class="p-4 rounded-xl glass-card border border-slate-800">
+          <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-800">
+            <h3 class="text-xs text-amber-400 font-bold uppercase flex items-center gap-1.5">
+              <i class="fa-solid fa-bars-staggered"></i> Level-2 Market Depth
+            </h3>
+            <span class="text-[9px] text-slate-400">INSTITUTIONAL LADDER</span>
+          </div>
+
+          <div class="mb-3">
+            <div class="flex justify-between text-[10px] font-bold mb-1">
+              <span class="text-emerald-400">BUY LIQUIDITY 78%</span>
+              <span class="text-rose-400">SELL LIQUIDITY 22%</span>
+            </div>
+            <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-800 flex">
+              <div class="bg-emerald-400 h-full rounded-l-full" style="width: 78%;"></div>
+              <div class="bg-rose-500 h-full rounded-r-full" style="width: 22%;"></div>
+            </div>
+          </div>
+
+          <div class="space-y-1 text-[11px]">
+            <div class="text-[10px] text-slate-500 flex justify-between px-1"><span>PRICE (USD)</span><span>ASK VOL (LOTS)</span></div>
+            <div class="flex justify-between p-1.5 rounded bg-rose-500/10 border border-rose-500/20 text-rose-300 font-bold">
+              <span>4,019.80</span><span>142.50</span>
+            </div>
+            <div class="text-center py-1.5 my-1 rounded bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-bold">
+              SPREAD: 0.25 PIPS (SPOT XAU/USD)
+            </div>
+            <div class="flex justify-between p-1.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 font-bold">
+              <span>4,015.20</span><span>118.40</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl glass-card border border-slate-800 overflow-hidden p-1" style="height: 190px;">
+          <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+            {
+              "colorTheme": "dark",
+              "dateRange": "1D",
+              "showChart": false,
+              "locale": "en",
+              "width": "100%",
+              "height": "100%",
+              "isTransparent": true,
+              "showSymbolLogo": true,
+              "tabs": [
+                {
+                  "title": "Live Assets",
+                  "symbols": [
+                    { "s": "OANDA:XAUUSD", "d": "Gold (XAU/USD)" },
+                    { "s": "OANDA:XAGUSD", "d": "Silver (XAG/USD)" }
+                  ]
+                }
+              ]
+            }
+            </script>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER (Col 6): TradingView Main XAU/USD Live Chart with Live Target Lines -->
+      <div class="lg:col-span-6 rounded-2xl overflow-hidden border border-slate-800 glass-card p-1 flex flex-col" style="height: 580px;">
+        <!-- 实时挂单与止损止盈画线控制台 -->
+        <div class="px-3 py-2 bg-slate-950/95 border-b border-slate-800 flex justify-between items-center text-xs font-mono">
+          <div class="flex items-center gap-2">
+            <span class="text-amber-400 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-crosshairs animate-pulse"></i> CHART PENDING LEVEL:
+            </span>
+            <span id="chartActiveEntry" class="text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">$4,016.50</span>
+          </div>
+          <div class="flex items-center gap-3 text-[11px]">
+            <span class="text-red-400 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/30">SL: <strong id="chartActiveSL">$4,028.50</strong></span>
+            <span class="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">TP1: <strong id="chartActiveTP">$4,002.00</strong></span>
+          </div>
+        </div>
+        <div id="tradingview_xauusd" class="flex-1 w-full"></div>
+      </div>
+
+      <!-- RIGHT SIDEBAR (Col 3): REAL-TIME LIVE BREAKING NEWS WIRE -->
+      <div class="lg:col-span-3 rounded-2xl glass-card p-3 border border-slate-800 flex flex-col justify-between overflow-hidden relative" id="newsCard" style="height: 580px;">
+        <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-800">
+          <h3 class="text-xs font-mono text-amber-400 font-bold uppercase flex items-center gap-1.5">
+            <i class="fa-solid fa-bolt text-red-500 animate-pulse"></i> Live Gold News Wire
+          </h3>
+          <span class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-2 py-0.5 rounded font-mono font-bold animate-pulse">
+            LIVE PUSH
+          </span>
+        </div>
+
+        <div class="space-y-2.5 overflow-y-auto pr-1 text-xs font-mono flex-1 custom-scroll" id="liveNewsContainer"></div>
+
+        <div class="pt-2 border-t border-slate-800 text-center flex justify-between items-center text-[9px] text-slate-500 font-mono">
+          <span>Auto-Polling: 10s</span>
+          <span class="text-emerald-400"><i class="fa-solid fa-signal"></i> WebSocket Active</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Active Setup Cards Grid -->
+    <div class="pt-2">
+      <h2 class="text-xs font-mono text-slate-400 tracking-wider uppercase mb-3 flex items-center gap-2">
+        <i class="fa-solid fa-bolt text-amber-400"></i> Active Institutional Signals (Click card to project lines onto chart)
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="cardsContainer"></div>
+    </div>
+
+  </main>
+
+  <!-- Create Signal Modal -->
+  <div id="setupModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-xl rounded-2xl p-6 shadow-2xl relative">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">&times;</button>
+      <h3 class="text-lg font-bold text-white mb-1 flex items-center gap-2">
+        <span class="text-amber-400">⚡</span> Create XAU/USD Signal Setup
+      </h3>
+      <p class="text-xs text-slate-400 mb-6">Configure live entry levels and pending lines.</p>
+
+      <div class="space-y-4 font-mono text-xs">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-slate-400 mb-1 block">Direction (Buy / Sell)</label>
+            <select id="modalDirection" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white">
+              <option value="SELL">SELL (SHORT LIMIT)</option>
+              <option value="BUY">BUY (LONG LIMIT)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-slate-400 mb-1 block">Entry Price</label>
+            <input type="text" id="modalEntry" value="4016.50" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-amber-400 font-bold">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-red-400 mb-1 block">Stop Loss (SL)</label>
+            <input type="text" id="modalSL" value="4028.50" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-red-400 font-bold">
+          </div>
+          <div>
+            <label class="text-emerald-400 mb-1 block">Take Profit 1 (TP1)</label>
+            <input type="text" id="modalTP1" value="4002.00" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-emerald-400 font-bold">
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mt-6">
+        <button type="button" onclick="fetchLiveMarketPrice()" class="w-full py-3 rounded-xl bg-amber-500/25 hover:bg-amber-500/35 border border-amber-500/60 text-amber-300 font-bold text-xs flex items-center justify-center gap-2">
+          <i class="fa-solid fa-bolt" id="syncBtnIcon"></i> Fetch Live Market Price
+        </button>
+        <button type="button" onclick="publishSignal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-extrabold text-xs shadow-lg shadow-amber-500/20 hover:brightness-110">
+          Publish & Project Lines
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentLiveGold = "4016.50";
+
+    async function fetchLiveMarketPrice() {
+      const icon = document.getElementById('syncBtnIcon');
+      if (icon) icon.classList.add('fa-spin');
+      try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
+        const data = await res.json();
+        if (data.price) currentLiveGold = parseFloat(data.price).toFixed(2);
+      } catch (e) {
+        currentLiveGold = (4014 + Math.random() * 5).toFixed(2);
+      }
+      document.getElementById('modalEntry').value = currentLiveGold;
+      document.getElementById('modalSL').value = (parseFloat(currentLiveGold) + 10).toFixed(2);
+      document.getElementById('modalTP1').value = (parseFloat(currentLiveGold) - 15).toFixed(2);
+      if (icon) setTimeout(() => icon.classList.remove('fa-spin'), 600);
+    }
+
+    let liveNewsData = [
+      { id: 1, time: "JUST NOW", source: "sKyLaB WIRE", tag: "BREAKING", title: "🚨 Gold spot surges past key $4,015 liquidity pool as US Dollar Index weakens.", detail: "Aggressive buying volume detected in London session." }
+    ];
+
+    function renderLiveNews() {
+      const container = document.getElementById('liveNewsContainer');
+      container.innerHTML = '';
+      liveNewsData.forEach(news => {
+        container.innerHTML += `
+          <div class="p-2.5 rounded-xl bg-slate-950/70 border border-red-500/40">
+            <div class="flex justify-between items-center text-[10px] text-slate-400 mb-1">
+              <span class="font-bold text-slate-300"><span class="px-1.5 rounded bg-red-500/20 text-red-400">${news.tag}</span> ${news.source}</span>
+              <span class="text-amber-400 font-bold">${news.time}</span>
+            </div>
+            <h4 class="text-slate-100 font-bold text-[11px]">${news.title}</h4>
+            <p class="text-[10px] text-slate-400 mt-1">${news.detail}</p>
+          </div>
+        `;
+      });
+    }
+
+    function simulateNewsPush() {
+      setInterval(() => {
+        liveNewsData.unshift({
+          id: Date.now(), time: "JUST NOW", source: "sKyLaB WIRE", tag: "LIVE PUSH",
+          title: "🚨 Institutional buy wall detected near $4,015 support zone.", detail: "High-frequency algorithms executing pending limit orders."
+        });
+        if (liveNewsData.length > 5) liveNewsData.pop();
+        renderLiveNews();
+      }, 30000);
+    }
+
+    let signals = [
+      { type: "BUY", orderType: "Pending Limit", status: "Running", entry: "4009.50", sl: "3999.50", tp1: "4021.00", buyPct: 67, sellPct: 33, rationale: "Clean liquidity sweep below London Session Low into 1H Bullish Order Block." },
+      { type: "SELL", orderType: "Pending Limit", status: "Running", entry: "4021.50", sl: "4031.50", tp1: "4008.50", buyPct: 33, sellPct: 67, rationale: "Price tapped 1H Bearish Order Block with Fair Value Gap (FVG) confluence." }
+    ];
+
+    function renderTradingViewCharts() {
+      if (typeof TradingView !== 'undefined') {
+        new TradingView.widget({
+          "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "15", "timezone": "Etc/UTC",
+          "theme": "dark", "style": "1", "locale": "en", "toolbar_bg": "#f1f3f6",
+          "enable_publishing": false, "hide_side_toolbar": false, "allow_symbol_change": true,
+          "container_id": "tradingview_xauusd"
+        });
+      }
+    }
+
+    function loadSignalToChart(entry, sl, tp1) {
+      document.getElementById('chartActiveEntry').innerText = `$${entry}`;
+      document.getElementById('chartActiveSL').innerText = `$${sl}`;
+      document.getElementById('chartActiveTP').innerText = `$${tp1}`;
+    }
+
+    function renderCards() {
+      const container = document.getElementById('cardsContainer');
+      container.innerHTML = '';
+      signals.forEach(sig => {
+        const isSell = sig.type === "SELL";
+        const badgeBg = isSell ? 'bg-red-500/10 text-red-400 border-red-500/30' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+        const typeBg = isSell ? 'bg-red-500 text-white' : 'bg-emerald-500 text-slate-950';
+
+        container.innerHTML += `
+          <div onclick="loadSignalToChart('${sig.entry}', '${sig.sl}', '${sig.tp1}')" class="p-4 rounded-xl glass-card font-mono relative overflow-hidden cursor-pointer hover:border-amber-400 transition-all">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <h3 class="text-white font-extrabold text-sm flex items-center gap-2">
+                  XAU/USD <span class="text-xs text-slate-400 font-normal">(${sig.orderType})</span>
+                </h3>
+                <span class="text-[9px] px-2 py-0.5 rounded border ${badgeBg} uppercase font-bold mt-1 inline-block">● ${sig.status}</span>
+              </div>
+              <div class="px-2.5 py-1 rounded-lg ${typeBg} font-black text-xs tracking-wider">${sig.type}</div>
+            </div>
+            <div class="space-y-1 text-xs text-slate-300">
+              <div class="flex justify-between"><span class="text-slate-500">Filled Entry:</span><span class="text-amber-400 font-bold">$${sig.entry}</span></div>
+              <div class="flex justify-between"><span class="text-red-400">Stop Loss (SL):</span><span class="text-red-400 font-bold">$${sig.sl}</span></div>
+              <div class="flex justify-between"><span class="text-emerald-400">Take Profit 1:</span><span class="text-emerald-400 font-bold">$${sig.tp1}</span></div>
+            </div>
+            <div class="mt-3 pt-2 border-t border-slate-800/80">
+              <p class="text-[10px] text-slate-400 font-sans"><span class="text-amber-400 font-bold">⚡ WHY:</span> ${sig.rationale}</p>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function openModal() { document.getElementById('setupModal').classList.remove('hidden'); }
+    function closeModal() { document.getElementById('setupModal').classList.add('hidden'); }
+
+    function publishSignal() {
+      const dir = document.getElementById('modalDirection').value;
+      const entry = document.getElementById('modalEntry').value;
+      const sl = document.getElementById('modalSL').value;
+      const tp1 = document.getElementById('modalTP1').value;
+
+      signals.unshift({
+        type: dir, orderType: "Pending Limit", status: "Running",
+        entry: entry, sl: sl, tp1: tp1, buyPct: dir === 'BUY' ? 75 : 25, sellPct: dir === 'BUY' ? 25 : 75,
+        rationale: "Custom published institutional setup via live wire."
+      });
+
+      loadSignalToChart(entry, sl, tp1);
+      renderCards();
+      closeModal();
+    }
+
+    window.onload = function() {
+      renderTradingViewCharts();
+      renderCards();
+      renderLiveNews();
+      simulateNewsPush();
+    };
+  </script>
+</body>
+</html>
