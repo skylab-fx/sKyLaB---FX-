@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#080d17" />
+<title>FINZA Intelligence — Market Dashboard</title>
+<style>
+:root{--bg:#070b14;--panel:#0b1220;--panel2:#0e1828;--line:#202d41;--text:#e7eef9;--muted:#8293aa;--blue:#4dc8ff;--green:#37d8a6;--red:#ff6e8d;--gold:#f2c968}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input{font:inherit}button{cursor:pointer;color:inherit;border:1px solid var(--line);background:#101a2a;border-radius:8px;padding:8px 11px}button:hover,button.active{border-color:#27749c;background:#12314a;color:#70d3ff}
+.app{max-width:1800px;margin:auto;padding:12px;display:grid;gap:12px;grid-template-columns: minmax(260px, .95fr) minmax(440px, 1.8fr) minmax(270px, .85fr);grid-template-areas:"header header header" "left main right" "news flow right"}
+header{grid-area:header;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 18px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.brand{display:flex;align-items:center;gap:12px}.logo{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:#0d2b43;color:var(--blue);font-size:22px;font-weight:900}.brand h1{font-size:17px;letter-spacing:.08em;margin:0}.brand small{color:var(--muted)}.status{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:12px}.pill{border:1px solid #705c2d;background:#2a2415;color:var(--gold);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:800;letter-spacing:.05em}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;min-width:0}.pad{padding:15px}.panel-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 14px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#a9b8cc}.left{grid-area:left}.main{grid-area:main}.right{grid-area:right}.news{grid-area:news}.flow{grid-area:flow}
+.filters,.tabs,.timeframes{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.filters button,.tabs button,.timeframes button{font-size:12px;padding:7px 9px}
+.search{width:100%;border:1px solid var(--line);background:#080f1b;color:var(--text);padding:10px;border-radius:8px;margin-bottom:12px;outline:none}.search:focus{border-color:var(--blue)}
+.heatmap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.tile{border:1px solid #1d4b43;background:#0d2d29;border-radius:10px;padding:12px;text-align:left;min-width:0}.tile.down{background:#351b2a;border-color:#633047}.tile.selected{outline:2px solid #2e9dbb}.tile-top{display:flex;justify-content:space-between;gap:5px;align-items:center}.ticker{font-weight:800;font-size:14px}.assetname{color:#9bacbf;font-size:11px;margin-top:7px}.price{font-size:20px;font-weight:750;margin-top:9px;white-space:nowrap}.change{font-size:12px;font-weight:700;color:var(--green)}.down .change{color:var(--red)}.heatbar{height:4px;border-radius:8px;background:#10212a;margin-top:10px;overflow:hidden}.heatbar span{display:block;height:100%;background:var(--green)}.down .heatbar span{background:var(--red)}
+.asset-head{padding:18px 18px 12px;border-bottom:1px solid var(--line)}.asset-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}.asset-row h2{margin:0;font-size:30px;letter-spacing:-.04em}.asset-row .subtitle{color:var(--muted);font-size:12px;margin-top:4px}.big-price{font-size:29px;font-weight:800;margin-top:14px}.up{color:var(--green)}.down-text{color:var(--red)}
+.chart-wrap{padding:12px 14px 8px}.chart-head{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}.legend{font-size:11px;color:var(--muted)}svg{display:block;width:100%;height:auto}.ohlc{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.ohlc div{padding:12px;border-right:1px solid var(--line)}.ohlc div:last-child{border:0}.ohlc small{display:block;color:var(--muted);font-size:10px;letter-spacing:.1em}.ohlc strong{display:block;margin-top:4px;font-size:14px}
+.keylevels{display:grid;gap:7px}.level{display:flex;justify-content:space-between;gap:10px;padding:10px 11px;border-radius:8px;background:#111b2b}.level span{color:#a6b6cc}.level strong{font-variant-numeric:tabular-nums}.level.res{background:#281827;color:#ff92ac}.level.sup{background:#102237;color:#75c6ff}.level.pivot{background:#282417;color:var(--gold)}
+.gauge{padding:12px 0 2px;text-align:center}.gauge svg{max-width:250px;margin:auto}.signal{font-size:25px;font-weight:850;color:var(--red);margin-top:-4px}.counts{color:var(--muted);font-size:12px;margin-top:8px}.counts b{color:var(--text)}.analysis-note{margin-top:15px;background:#0a1a29;border:1px solid #183b50;border-radius:10px;padding:12px;color:#b8c7d8}.analysis-note strong{color:var(--blue)}
+.flow-grid{display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:center}.donut{width:145px;height:145px;border-radius:50%;background:conic-gradient(var(--green) 0 62%,#b83e5c 62% 100%);display:grid;place-items:center;margin:auto}.donut-inner{width:95px;height:95px;border-radius:50%;background:var(--panel);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.donut-inner small{color:var(--muted);font-size:10px;letter-spacing:.08em}.donut-inner strong{font-size:17px;color:#55e9b6}.bars{display:grid;gap:10px}.barrow{display:grid;grid-template-columns:30px 1fr 1fr;gap:8px;align-items:center;font-size:11px;color:var(--muted)}.bar{height:17px;background:#131e2e;border-radius:4px;overflow:hidden}.bar span{display:block;height:100%;border-radius:4px}.bar.in span{background:linear-gradient(90deg,#12644f,#20c99a)}.bar.out span{background:linear-gradient(90deg,#67253b,#c44565)}.barlabel{font-size:11px;margin-top:3px}.feed-item{padding:12px 0;border-bottom:1px solid var(--line)}.feed-item:last-child{border-bottom:0}.feed-meta{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:11px}.feed-item h3{font-size:13px;font-weight:600;margin:7px 0;color:#e0e9f5}.tag{display:inline-block;font-size:10px;padding:3px 6px;border:1px solid #35435a;border-radius:5px;color:#a9c8e9}.notice{color:var(--muted);font-size:11px;margin-top:12px;line-height:1.5}.bottomnav{display:none}.hidden{display:none!important}
+@media(max-width:1100px){.app{grid-template-columns:minmax(240px,.9fr) minmax(390px,1.5fr);grid-template-areas:"header header" "left main" "flow main" "news right"}.right{grid-area:right}.main{grid-area:main}}
+@media(max-width:720px){.app{padding:8px;gap:8px;grid-template-columns:1fr;grid-template-areas:"header" "main" "left" "flow" "right" "news"}header{padding:12px}.brand h1{font-size:14px}.status{flex-direction:column;align-items:flex-end}.asset-row h2{font-size:25px}.big-price{font-size:25px}.pad{padding:12px}.flow-grid{grid-template-columns:1fr}.donut{width:130px;height:130px}.donut-inner{width:85px;height:85px}.ohlc div{padding:9px 7px}.ohlc strong{font-size:12px}.heatmap{grid-template-columns:repeat(2,minmax(0,1fr))}.tile{padding:10px}.price{font-size:17px}.bottomnav{display:flex;position:sticky;bottom:0;background:#0b1220;border-top:1px solid var(--line);padding:7px;justify-content:space-around;z-index:5}.bottomnav button{border:0;background:transparent;font-size:11px}.panel-title{font-size:12px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><div class="logo">F</div><div><h1>FINZA INTELLIGENCE</h1><small>INSTITUTIONAL MARKET MONITOR</small></div></div>
+  <div class="status"><span class="pill">DEMO DATA</span><span>● Data feeds not connected</span></div>
+</header>
+
+<section class="panel left">
+  <div class="pad">
+    <h2 class="panel-title"><span>Market Heatmap</span><span id="watchCount">10 assets</span></h2>
+    <div class="filters" id="filters">
+      <button class="active" data-category="All">All Markets</button><button data-category="Crypto">Crypto</button><button data-category="Metals">Metals</button><button data-category="Indices">Indices</button><button data-category="Stocks">US Stocks</button><button data-category="Commodities">Commodities</button>
+    </div>
+    <input id="search" class="search" placeholder="Search ticker or market…" />
+    <div class="heatmap" id="heatmap"></div>
+    <p class="notice">Prices and percentage changes are illustrative placeholders, not live quotes.</p>
+  </div>
+</section>
+
+<section class="panel main">
+  <div class="asset-head">
+    <div class="asset-row"><div><h2 id="selectedTicker">XAU/USD</h2><div class="subtitle" id="selectedName">Gold Spot · Metals</div></div><div style="text-align:right"><span class="pill">DEMO</span><div class="big-price" id="selectedPrice">4,014.49</div><div class="change" id="selectedChange">+0.52%</div></div></div>
+  </div>
+  <div class="pad">
+    <h2 class="panel-title">Price Action <span id="chartLabel">30m · Illustration</span></h2>
+    <div class="timeframes" id="timeframes"><button data-time="1m">1m</button><button data-time="5m">5m</button><button data-time="15m">15m</button><button class="active" data-time="30m">30m</button><button data-time="1H">1H</button><button data-time="4H">4H</button><button data-time="1D">1D</button><button data-time="1W">1W</button></div>
+    <div class="chart-head"><span class="legend">● Up candle &nbsp; <span style="color:var(--red)">● Down candle</span></span><span class="legend">OHLCV chart placeholder</span></div>
+    <svg id="chart" viewBox="0 0 660 280" role="img" aria-label="Illustrative candlestick chart">
+      <rect width="660" height="280" fill="#080f1b" rx="8"/>
+      <g stroke="#1a2b40" stroke-width="1"><path d="M12 35H645 M12 85H645 M12 135H645 M12 185H645 M12 235H645"/><path d="M100 10V250 M200 10V250 M300 10V250 M400 10V250 M500 10V250 M600 10V250"/></g>
+      <path d="M12 76H645" stroke="#f16b8b" stroke-dasharray="5 4"/><path d="M12 190H645" stroke="#4dc8ff" stroke-dasharray="5 4"/>
+      <g id="candles"></g>
+      <g fill="#71849d" font-size="11"><text x="15" y="269">Historical structure</text><text x="570" y="269">Demo chart</text></g>
+    </svg>
+    <div class="ohlc"><div><small>OPEN</small><strong id="openVal">3,993.57</strong></div><div><small>HIGH</small><strong id="highVal">4,022.20</strong></div><div><small>LOW</small><strong id="lowVal">3,977.58</strong></div><div><small>VOLUME</small><strong>—</strong></div></div>
+    <div style="padding-top:16px"><h2 class="panel-title">Key Levels <span>Example levels</span></h2><div class="keylevels"><div class="level res"><span>Resistance 2</span><strong id="r2">4,062.65</strong></div><div class="level res"><span>Resistance 1</span><strong id="r1">4,031.76</strong></div><div class="level"><span>Current reference</span><strong id="currentLevel">4,014.49</strong></div><div class="level pivot"><span>Pivot Point</span><strong id="pivot">4,003.80</strong></div><div class="level sup"><span>Support 1</span><strong id="s1">3,972.91</strong></div><div class="level sup"><span>Support 2</span><strong id="s2">3,944.95</strong></div></div></div>
+  </div>
+</section>
+
+<section class="panel right">
+  <div class="pad">
+    <h2 class="panel-title"><span>AI Market Analyst</span><span>Demo</span></h2>
+    <div class="gauge">
+      <svg viewBox="0 0 240 145" aria-label="Illustrative sentiment gauge"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0%" stop-color="#e85a64"/><stop offset="50%" stop-color="#d5a35b"/><stop offset="100%" stop-color="#23c99b"/></linearGradient></defs><path d="M25 120 A95 95 0 0 1 215 120" fill="none" stroke="#1b2738" stroke-width="15" stroke-linecap="round"/><path d="M25 120 A95 95 0 0 1 215 120" fill="none" stroke="url(#g)" stroke-width="15" stroke-linecap="round"/><line x1="120" y1="120" x2="65" y2="48" stroke="#f6c18b" stroke-width="5" stroke-linecap="round"/><circle cx="120" cy="120" r="9" fill="#d99456" stroke="#f4c58d" stroke-width="2"/><g fill="#8293aa" font-size="10"><text x="8" y="140">SELL</text><text x="98" y="140">NEUTRAL</text><text x="181" y="140">BUY</text></g></svg>
+      <div class="signal" id="signal">Bearish</div><div class="counts"><b style="color:var(--red)">11 sell</b> · <b>0 neutral</b> · <b style="color:var(--green)">4 buy</b></div>
+    </div>
+    <div class="analysis-note"><strong>Analyst note</strong><p id="analystText">This is a sample analysis card. Live technical inputs and an AI inference service are not connected.</p></div>
+    <p class="notice">A production signal should show its timestamp, inputs, confidence, invalidation conditions and data quality. It is not a guarantee of future price direction.</p>
+  </div>
+</section>
+
+<section class="panel news">
+  <div class="pad">
+    <h2 class="panel-title"><span>Market News Feed</span><span class="pill">SAMPLE</span></h2>
+    <div class="filters" id="newsFilters"><button class="active" data-news="All">All news</button><button data-news="Critical">Critical</button></div>
+    <div id="newsList"></div>
+    <p class="notice">Sample headlines only. No news provider is connected; these are not verified current news reports.</p>
+  </div>
+</section>
+
+<section class="panel flow">
+  <div class="pad">
+    <h2 class="panel-title"><span>Money Flow Monitor</span><span>Illustrative</span></h2>
+    <div class="flow-grid">
+      <div><div class="donut"><div class="donut-inner"><small>NET FLOW</small><strong>+$46.84M</strong></div></div><div style="text-align:center;margin-top:10px;font-size:11px;color:var(--muted)">Sample values only</div></div>
+      <div><div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:14px"><span class="up">Inflow $117.11M</span><span class="down-text">Outflow $70.27M</span></div><div class="bars" id="flowBars"></div></div>
+    </div>
+    <p class="notice">Actual net flows require a defined methodology and real trade data. Volume alone is not the same as net buying or selling.</p>
+  </div>
+</section>
+</div>
+<nav class="bottomnav"><button data-scroll="main">Chart</button><button data-scroll="left">Markets</button><button data-scroll="flow">Money Flow</button><button data-scroll="right">AI Analyst</button><button data-scroll="news">News</button></nav>
+<script>
+const assets=[
+{s:"XAU/USD",n:"Gold Spot",p:"4,014.49",c:"+0.52%",up:true,cat:"Metals"},
+{s:"XAG/USD",n:"Silver Spot",p:"53.97",c:"+0.04%",up:true,cat:"Metals"},
+{s:"BTC/USD",n:"Bitcoin",p:"67,432.15",c:"+2.34%",up:true,cat:"Crypto"},
+{s:"ETH/USD",n:"Ethereum",p:"2,624.32",c:"−1.87%",up:false,cat:"Crypto"},
+{s:"XRP/USD",n:"XRP",p:"0.5423",c:"+1.45%",up:true,cat:"Crypto"},
+{s:"SPX",n:"S&P 500",p:"6,738.20",c:"−0.31%",up:false,cat:"Indices"},
+{s:"NDX",n:"Nasdaq 100",p:"24,812.40",c:"+0.28%",up:true,cat:"Indices"},
+{s:"WTI",n:"Crude Oil",p:"61.82",c:"−0.62%",up:false,cat:"Commodities"},
+{s:"AAPL",n:"Apple Inc.",p:"262.91",c:"+0.74%",up:true,cat:"Stocks"},
+{s:"NVDA",n:"NVIDIA",p:"189.72",c:"+1.22%",up:true,cat:"Stocks"}];
+let selected="XAU/USD",category="All",time="30m",newsFilter="All";
+const $=id=>document.getElementById(id);
+function renderHeatmap(){const q=$("search").value.toLowerCase();const list=assets.filter(a=>(category==="All"||a.cat===category)&&(`${a.s} ${a.n}`).toLowerCase().includes(q));$("watchCount").textContent=`${list.length} assets`; $("heatmap").innerHTML=list.map(a=>`<button class="tile ${a.up?"":"down"} ${a.s===selected?"selected":""}" data-symbol="${a.s}"><div class="tile-top"><span class="ticker">${a.s}</span><span class="change">${a.c}</span></div><div class="assetname">${a.n}</div><div class="price">${a.p}</div><div class="heatbar"><span style="width:${a.up?72:37}%"></span></div></button>`).join("");document.querySelectorAll("[data-symbol]").forEach(b=>b.onclick=()=>selectAsset(b.dataset.symbol))}
+function selectAsset(s){selected=s;const a=assets.find(x=>x.s===s);$("selectedTicker").textContent=a.s;$("selectedName").textContent=`${a.n} · ${a.cat}`;$("selectedPrice").textContent=a.p;$("selectedChange").textContent=a.c;$("selectedChange").className="change "+(a.up?"":"down-text");$("currentLevel").textContent=a.p;if(s!=="XAU/USD"){["r2","r1","pivot","s1","s2"].forEach(id=>$(id).textContent="—");$("analystText").textContent=`${a.n}: sample watchlist values only. Live candles, indicators, and news are not connected.`}else{ $("r2").textContent="4,062.65";$("r1").textContent="4,031.76";$("pivot").textContent="4,003.80";$("s1").textContent="3,972.91";$("s2").textContent="3,944.95";$("analystText").textContent="Illustrative bearish technical posture from the reference design. No live technical inputs or AI inference are connected."}renderHeatmap()}
+$("search").addEventListener("input",renderHeatmap);
+document.querySelectorAll("[data-category]").forEach(b=>b.onclick=()=>{category=b.dataset.category;document.querySelectorAll("[data-category]").forEach(x=>x.classList.toggle("active",x===b));renderHeatmap()});
+document.querySelectorAll("[data-time]").forEach(b=>b.onclick=()=>{time=b.dataset.time;document.querySelectorAll("[data-time]").forEach(x=>x.classList.toggle("active",x===b));$("chartLabel").textContent=`${time} · Illustration`});
+function makeCandles(){let out="",prev=42;for(let i=0;i<45;i++){let drift=i*3.2;let y=Math.max(22,Math.min(190,prev+(Math.sin(i*1.7)*11)+(i>20?2.3:-1.3)));let h=5+(i*7%15),up=(i%5!==1&&i%7!==3),color=up?"#37d8a6":"#ff6e8d";out+=`<line x1="${22+i*13.4}" y1="${y-8}" x2="${22+i*13.4}" y2="${y+h+8}" stroke="${color}" stroke-width="1.3"/><rect x="${18+i*13.4}" y="${y}" width="8" height="${h}" rx="1" fill="${color}"/>`;prev=y+(up?-4:5)}$("candles").innerHTML=out}
+const flow=[["XL",39.31,0],["L",19.36,29.95],["M",35.14,19.98],["S",23.30,20.34]];
+$("flowBars").innerHTML=flow.map(f=>`<div class="barrow"><b>${f[0]}</b><div><div class="bar in"><span style="width:${f[1]/40*100}%"></span></div><div class="barlabel" style="color:var(--green)">$${f[1].toFixed(2)}M in</div></div><div><div class="bar out"><span style="width:${f[2]/40*100}%"></span></div><div class="barlabel" style="color:var(--red)">$${f[2].toFixed(2)}M out</div></div></div>`).join("");
+const news=[["Gold & Macro","Gold traders monitor dollar strength and Treasury yields","Macro",true],["Crypto","Digital assets watchlist: BTC and ETH volatility monitor","Crypto",false],["US Markets","Equity index watch: track breadth and major earnings catalysts","Equities",true],["Commodities","Oil and industrial metals remain on the commodity watchlist","Commodities",false]];
+function renderNews(){$("newsList").innerHTML=news.filter(n=>newsFilter==="All"||n[3]).map(n=>`<article class="feed-item"><div class="feed-meta"><span>${n[0]} · DEMO</span><span>Sample</span></div><h3>${n[1]}</h3><span class="tag">${n[2]}</span></article>`).join("")}
+document.querySelectorAll("[data-news]").forEach(b=>b.onclick=()=>{newsFilter=b.dataset.news;document.querySelectorAll("[data-news]").forEach(x=>x.classList.toggle("active",x===b));renderNews()});
+document.querySelectorAll("[data-scroll]").forEach(b=>b.onclick=()=>document.querySelector("."+b.dataset.scroll).scrollIntoView({behavior:"smooth",block:"start"}));
+makeCandles();renderHeatmap();renderNews();
+</script>
+</body>
+</html>
