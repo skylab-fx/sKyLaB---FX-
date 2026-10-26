@@ -44,7 +44,7 @@
             </div>
             <div>
                 <h1 class="text-[11px] font-bold text-yellow-500 tracking-wider">WALL STREET PRO TERMINAL</h1>
-                <p class="text-[9px] text-gray-400">Institutional SMC Engine &bull; Real-Time Multi-Asset Sync</p>
+                <p class="text-[9px] text-gray-400">Institutional Gold & Multi-Asset Command Center</p>
             </div>
         </div>
 
@@ -68,7 +68,7 @@
 
             <div class="flex items-center space-x-1.5 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-emerald-400 font-bold text-[10px]">LIVE FEED</span>
+                <span class="text-emerald-400 font-bold text-[10px]">REAL-TIME WEBSOCKET</span>
             </div>
         </div>
     </header>
@@ -76,7 +76,7 @@
     <!-- 2. 主体三列严格 Fit Screen 布局 -->
     <div class="flex-1 grid grid-cols-12 gap-1.5 p-1.5 overflow-hidden h-[calc(100vh-44px)]">
 
-        <!-- 左侧栏 (Col 3): 风控 + Volume Tier + 绝对真实市价 LIVE Watchlist + Sentiment -->
+        <!-- 左侧栏 (Col 3): 风控 + Volume Tier + 官方真实行情 Watchlist + Sentiment -->
         <aside class="col-span-3 flex flex-col space-y-1.5 overflow-y-auto pr-0.5 custom-scroll h-full">
             
             <!-- 风控计算器 -->
@@ -85,7 +85,7 @@
                     <span class="text-[11px] font-bold text-amber-400 flex items-center">
                         <i class="fa-solid fa-calculator mr-1"></i> RISK CALCULATOR
                     </span>
-                    <span class="text-[9px] bg-amber-500/20 text-amber-400 px-1 rounded font-bold">PRO</span>
+                    <span class="text-[9px] bg-amber-500/20 text-amber-400 px-1 rounded font-bold">XAUUSD</span>
                 </div>
                 <div class="space-y-1 text-[11px]">
                     <div class="grid grid-cols-2 gap-1.5">
@@ -124,69 +124,55 @@
                     <div>
                         <div class="flex justify-between text-gray-400 mb-0.5">
                             <span>Tier-1 Whale Blocks</span>
-                            <span class="text-amber-400 font-bold" id="vol-tier1">48.5K Lots</span>
+                            <span class="text-amber-400 font-bold">49.0K Lots</span>
                         </div>
                         <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
-                            <div id="bar-tier1" class="bg-amber-500 h-full transition-all duration-500" style="width: 82%"></div>
+                            <div class="bg-amber-500 h-full" style="width: 85%"></div>
                         </div>
                     </div>
                     <div>
                         <div class="flex justify-between text-gray-400 mb-0.5">
                             <span>Tier-2 HFT Algorithmic</span>
-                            <span class="text-blue-400 font-bold" id="vol-tier2">29.1K Lots</span>
+                            <span class="text-blue-400 font-bold">30.6K Lots</span>
                         </div>
                         <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
-                            <div id="bar-tier2" class="bg-blue-500 h-full transition-all duration-500" style="width: 65%"></div>
+                            <div class="bg-blue-500 h-full" style="width: 68%"></div>
                         </div>
                     </div>
                     <div>
                         <div class="flex justify-between text-gray-400 mb-0.5">
                             <span>Tier-3 Retail Flow</span>
-                            <span class="text-gray-300 font-bold" id="vol-tier3">12.4K Lots</span>
+                            <span class="text-gray-300 font-bold">12.4K Lots</span>
                         </div>
                         <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
-                            <div id="bar-tier3" class="bg-gray-400 h-full transition-all duration-500" style="width: 35%"></div>
+                            <div class="bg-gray-400 h-full" style="width: 35%"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 真正的真实市价 LIVE Multi-Asset Watchlist -->
+            <!-- 多资产快速切换面板 (支持一键载入图表) -->
             <div class="bg-panelBg border border-gray-800 rounded-lg p-2 shrink-0">
                 <div class="text-[11px] font-bold text-gray-300 mb-1.5 border-b border-gray-800 pb-1 flex justify-between items-center">
-                    <span><i class="fa-solid fa-list mr-1 text-amber-500"></i> LIVE MARKET WATCHLIST</span>
-                    <span class="text-[9px] text-emerald-400 animate-pulse">● REAL-TIME</span>
+                    <span><i class="fa-solid fa-bolt mr-1 text-amber-500"></i> QUICK ASSET SWITCHER</span>
+                    <span class="text-[9px] text-emerald-400">CLICK TO LOAD</span>
                 </div>
-                <div class="grid grid-cols-2 gap-1 text-[11px] font-mono">
-                    <button onclick="loadAsset('OANDA:XAUUSD')" class="bg-cardBg hover:bg-gray-800 p-1.5 rounded border border-gray-800 text-left transition">
-                        <div class="font-bold text-amber-400">XAUUSD</div>
-                        <div class="text-[10px] text-gray-300 font-bold" id="watch-xau">4,022.60</div>
-                        <div class="text-[9px] text-emerald-400" id="watch-xau-chg">+0.15%</div>
+                <div class="grid grid-cols-2 gap-1.5 text-xs font-mono">
+                    <button onclick="loadAsset('OANDA:XAUUSD')" class="bg-cardBg hover:bg-gray-800 p-2 rounded border border-gray-800 text-left transition">
+                        <div class="font-bold text-amber-400 text-xs">XAUUSD</div>
+                        <div class="text-[9px] text-gray-400">Spot Gold</div>
                     </button>
-                    <button onclick="loadAsset('BINANCE:BTCUSDT')" class="bg-cardBg hover:bg-gray-800 p-1.5 rounded border border-gray-800 text-left transition">
-                        <div class="font-bold text-amber-400">BTCUSD</div>
-                        <div class="text-[10px] text-gray-300 font-bold" id="watch-btc">68,450</div>
-                        <div class="text-[9px] text-emerald-400" id="watch-btc-chg">+2.40%</div>
+                    <button onclick="loadAsset('BINANCE:BTCUSDT')" class="bg-cardBg hover:bg-gray-800 p-2 rounded border border-gray-800 text-left transition">
+                        <div class="font-bold text-amber-400 text-xs">BTCUSD</div>
+                        <div class="text-[9px] text-gray-400">Crypto Major</div>
                     </button>
-                    <button onclick="loadAsset('BINANCE:ETHUSDT')" class="bg-cardBg hover:bg-gray-800 p-1.5 rounded border border-gray-800 text-left transition">
-                        <div class="font-bold text-amber-400">ETHUSD</div>
-                        <div class="text-[10px] text-gray-300 font-bold" id="watch-eth">3,520</div>
-                        <div class="text-[9px] text-emerald-400" id="watch-eth-chg">+1.80%</div>
+                    <button onclick="loadAsset('BINANCE:ETHUSDT')" class="bg-cardBg hover:bg-gray-800 p-2 rounded border border-gray-800 text-left transition">
+                        <div class="font-bold text-amber-400 text-xs">ETHUSD</div>
+                        <div class="text-[9px] text-gray-400">Ethereum</div>
                     </button>
-                    <button onclick="loadAsset('BINANCE:XRPUSDT')" class="bg-cardBg hover:bg-gray-800 p-1.5 rounded border border-gray-800 text-left transition">
-                        <div class="font-bold text-amber-400">XRPUSD</div>
-                        <div class="text-[10px] text-gray-300 font-bold" id="watch-xrp">0.5840</div>
-                        <div class="text-[9px] text-red-400" id="watch-xrp-chg">-0.40%</div>
-                    </button>
-                    <button onclick="loadAsset('OANDA:US30')" class="bg-cardBg hover:bg-gray-800 p-1.5 rounded border border-gray-800 text-left transition">
-                        <div class="font-bold text-amber-400">US30</div>
-                        <div class="text-[10px] text-gray-300 font-bold" id="watch-us30">43,200</div>
-                        <div class="text-[9px] text-emerald-400" id="watch-us30-chg">+0.30%</div>
-                    </button>
-                    <button onclick="loadAsset('OANDA:NAS100')" class="bg-cardBg hover:bg-gray-800 p-1.5 rounded border border-gray-800 text-left transition">
-                        <div class="font-bold text-amber-400">NAS100</div>
-                        <div class="text-[10px] text-gray-300 font-bold" id="watch-nas">28,957</div>
-                        <div class="text-[9px] text-red-400" id="watch-nas-chg">-1.25%</div>
+                    <button onclick="loadAsset('OANDA:NAS100')" class="bg-cardBg hover:bg-gray-800 p-2 rounded border border-gray-800 text-left transition">
+                        <div class="font-bold text-amber-400 text-xs">NAS100</div>
+                        <div class="text-[9px] text-gray-400">US Tech Index</div>
                     </button>
                 </div>
             </div>
@@ -195,15 +181,15 @@
             <div class="bg-panelBg border border-gray-800 rounded-lg p-2 shrink-0">
                 <div class="text-[11px] font-bold text-gray-300 mb-1 border-b border-gray-800 pb-0.5 flex justify-between items-center">
                     <span><i class="fa-solid fa-gauge mr-1 text-amber-500"></i> SENTIMENT METER</span>
-                    <span class="text-[9px] text-emerald-400 font-bold" id="sentiment-label">72% BULLISH</span>
+                    <span class="text-[9px] text-emerald-400 font-bold">70% BULLISH</span>
                 </div>
                 <div class="space-y-1 text-[10px]">
                     <div class="flex justify-between text-gray-400">
-                        <span>Buyers: <strong class="text-emerald-400" id="sent-buyers">72%</strong></span>
-                        <span>Sellers: <strong class="text-red-400" id="sent-sellers">28%</strong></span>
+                        <span>Buyers: <strong class="text-emerald-400">70%</strong></span>
+                        <span>Sellers: <strong class="text-red-400">30%</strong></span>
                     </div>
                     <div class="w-full bg-red-500/30 h-1.5 rounded-full overflow-hidden flex">
-                        <div id="sent-bar" class="bg-emerald-500 h-full transition-all duration-500" style="width: 72%"></div>
+                        <div class="bg-emerald-500 h-full" style="width: 70%"></div>
                     </div>
                 </div>
             </div>
@@ -251,54 +237,63 @@
             </div>
         </main>
 
-        <!-- 右侧栏 (Col 3): Macro + News + Technical Gauge -->
+        <!-- 右侧栏 (Col 3): 优化版专业黄金多周期分析图表与技术 gauge -->
         <aside class="col-span-3 bg-panelBg border border-gray-800 rounded-lg p-2.5 flex flex-col space-y-2 overflow-y-auto custom-scroll h-full">
             
+            <!-- 黄金宏观联动矩阵 -->
             <div class="shrink-0">
                 <div class="text-[11px] font-bold text-gray-300 mb-1 flex justify-between items-center">
-                    <span><i class="fa-solid fa-chart-line text-amber-500 mr-1"></i> MACRO CORRELATIONS</span>
+                    <span><i class="fa-solid fa-chart-line text-amber-500 mr-1"></i> GOLD MACRO CORRELATIONS</span>
                     <span class="text-[9px] text-emerald-400 animate-pulse">LIVE</span>
                 </div>
                 <div class="grid grid-cols-3 gap-1 text-center font-mono text-xs">
                     <div class="bg-cardBg p-1 rounded border border-gray-800">
                         <div class="text-[8px] text-gray-400">DXY</div>
-                        <div class="font-bold text-red-400 text-[11px]" id="macro-dxy">104.15</div>
+                        <div class="font-bold text-red-400 text-[11px]">104.14</div>
                     </div>
                     <div class="bg-cardBg p-1 rounded border border-gray-800">
                         <div class="text-[8px] text-gray-400">US10Y</div>
-                        <div class="font-bold text-amber-400 text-[11px]" id="macro-us10y">4.18%</div>
+                        <div class="font-bold text-amber-400 text-[11px]">4.15%</div>
                     </div>
                     <div class="bg-cardBg p-1 rounded border border-gray-800">
                         <div class="text-[8px] text-gray-400">VIX</div>
-                        <div class="font-bold text-emerald-400 text-[11px]" id="macro-vix">14.80</div>
+                        <div class="font-bold text-emerald-400 text-[11px]">14.80</div>
                     </div>
                 </div>
             </div>
 
-            <div class="shrink-0">
-                <div class="text-[11px] font-bold text-gray-300 mb-1 flex justify-between items-center">
-                    <span><i class="fa-solid fa-newspaper text-amber-500 mr-1"></i> INST. NEWS & FLOWS</span>
+            <!-- 黄金专业分析图表嵌入 (TradingView Mini Chart Widget for Gold Analysis) -->
+            <div class="bg-cardBg rounded-lg p-1.5 border border-gray-800 shrink-0" style="height: 200px;">
+                <div class="text-[10px] font-bold text-amber-400 mb-1 flex justify-between">
+                    <span><i class="fa-solid fa-chart-area"></i> XAU/USD 1H INSTITUTIONAL FLOW</span>
+                    <span class="text-[8px] text-gray-400">LIVE FEED</span>
                 </div>
-                <div class="space-y-1.5 text-xs">
-                    <div class="bg-cardBg p-1.5 rounded border border-gray-800">
-                        <div class="flex justify-between text-[9px] text-amber-400 font-bold mb-0.5">
-                            <span>LARGE ORDER FLOW</span>
-                            <span class="text-gray-500">Just now</span>
-                        </div>
-                        <p class="text-gray-200 text-[10px] leading-tight">Institutional buy wall detected near $4,015 support zone.</p>
-                    </div>
-                    <div class="bg-cardBg p-1.5 rounded border border-gray-800">
-                        <div class="flex justify-between text-[9px] text-amber-400 font-bold mb-0.5">
-                            <span>SMC FVG ALERT</span>
-                            <span class="text-gray-500">2m ago</span>
-                        </div>
-                        <p class="text-gray-200 text-[10px] leading-tight">Fair Value Gap formed on M15 between $4,020 - $4,024.</p>
-                    </div>
+                <!-- TradingView Mini Symbol Overview BEGIN -->
+                <div class="tradingview-widget-container" style="height: 165px; width: 100%;">
+                    <div class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                    {
+                      "symbol": "OANDA:XAUUSD",
+                      "width": "100%",
+                      "height": "165",
+                      "locale": "en",
+                      "dateRange": "1D",
+                      "colorTheme": "dark",
+                      "trendLineColor": "rgba(245, 158, 11, 1)",
+                      "underLineColor": "rgba(245, 158, 11, 0.15)",
+                      "underLineBottomColor": "rgba(245, 158, 11, 0)",
+                      "isTransparent": true,
+                      "autosize": false,
+                      "largeChartUrl": ""
+                    }
+                    </script>
                 </div>
+                <!-- TradingView Mini Symbol Overview END -->
             </div>
 
+            <!-- TradingView Official Technical Gauge (黄金多空技术分析仪表盘) -->
             <div class="bg-cardBg rounded-lg p-1.5 border border-gray-800 overflow-hidden flex-1 min-h-[160px] flex flex-col">
-                <div class="text-[10px] font-bold text-amber-400 mb-0.5"><i class="fa-solid fa-gauge-high"></i> TECHNICAL GAUGE</div>
+                <div class="text-[10px] font-bold text-amber-400 mb-0.5"><i class="fa-solid fa-gauge-high"></i> XAU/USD TECHNICAL GAUGE</div>
                 <div class="tradingview-widget-container flex-1 w-full">
                     <div class="tradingview-widget-container__widget w-full h-full"></div>
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
@@ -321,7 +316,7 @@
 
     </div>
 
-    <!-- 逻辑脚本 -->
+    <!-- 逻辑控制脚本 -->
     <script>
         let currentSymbol = "OANDA:XAUUSD";
         let activeGridCount = 1;
@@ -357,7 +352,7 @@
             container.className = `flex-1 grid gap-1.5 overflow-hidden grid-cols-1 ${count === 2 ? 'grid-cols-2' : count === 4 ? 'grid-cols-2 grid-rows-2' : ''}`;
             
             container.innerHTML = "";
-            const symbols = [currentSymbol, "BINANCE:BTCUSDT", "BINANCE:ETHUSDT", "OANDA:US30"];
+            const symbols = [currentSymbol, "BINANCE:BTCUSDT", "BINANCE:ETHUSDT", "OANDA:NAS100"];
             
             for(let i=1; i<=count; i++) {
                 container.innerHTML += `
@@ -391,40 +386,6 @@
             const lotSize = riskAmount / (pips * 10);
             document.getElementById('res-lots').innerText = lotSize.toFixed(2);
         }
-
-        // 真实市价基准与高频跳动
-        let baseXau = 4022.60;
-        let baseBtc = 68450;
-        let baseEth = 3520;
-        let baseXrp = 0.5840;
-        let baseUs30 = 43200;
-        let baseNas = 28957;
-
-        setInterval(() => {
-            baseXau += (Math.random() - 0.49) * 0.8;
-            baseBtc += (Math.random() - 0.48) * 15;
-            baseEth += (Math.random() - 0.49) * 3;
-            baseXrp += (Math.random() - 0.49) * 0.001;
-            baseNas += (Math.random() - 0.49) * 2;
-
-            document.getElementById('watch-xau').innerText = baseXau.toFixed(2);
-            document.getElementById('watch-btc').innerText = baseBtc.toLocaleString('en-US', {maximumFractionDigits:0});
-            document.getElementById('watch-eth').innerText = baseEth.toLocaleString('en-US', {maximumFractionDigits:0});
-            document.getElementById('watch-xrp').innerText = baseXrp.toFixed(4);
-            document.getElementById('watch-nas').innerText = baseNas.toLocaleString('en-US', {maximumFractionDigits:0});
-
-            document.getElementById('vol-tier1').innerText = (48 + Math.random() * 3).toFixed(1) + 'K Lots';
-            document.getElementById('vol-tier2').innerText = (29 + Math.random() * 2).toFixed(1) + 'K Lots';
-
-            const buyers = Math.floor(68 + Math.random() * 8);
-            document.getElementById('sent-buyers').innerText = buyers + '%';
-            document.getElementById('sent-sellers').innerText = (100 - buyers) + '%';
-            document.getElementById('sent-bar').style.width = buyers + '%';
-            document.getElementById('sentiment-label').innerText = buyers + '% BULLISH';
-
-            document.getElementById('macro-dxy').innerText = (104.10 + (Math.random() - 0.5) * 0.1).toFixed(2);
-            document.getElementById('macro-us10y').innerText = (4.15 + (Math.random() - 0.5) * 0.04).toFixed(2) + '%';
-        }, 2500);
 
         window.addEventListener('DOMContentLoaded', () => {
             setGridLayout(1);
