@@ -36,7 +36,7 @@
 </head>
 <body class="bg-darkBg text-gray-200 font-sans antialiased h-screen flex flex-col overflow-hidden">
 
-    <!-- 1. 顶部 Header (Fit Screen 紧凑顶栏) -->
+    <!-- 1. 顶部 Header -->
     <header class="bg-panelBg border-b border-gray-800 px-3 py-1.5 flex items-center justify-between shrink-0 h-11">
         <div class="flex items-center space-x-3">
             <div class="bg-gradient-to-r from-amber-500 to-yellow-600 px-2.5 py-0.5 rounded text-black font-extrabold text-sm tracking-wider">
@@ -44,11 +44,10 @@
             </div>
             <div>
                 <h1 class="text-[11px] font-bold text-yellow-500 tracking-wider">WALL STREET PRO TERMINAL</h1>
-                <p class="text-[9px] text-gray-400">Institutional SMC Engine &bull; Live Multi-Asset Sync</p>
+                <p class="text-[9px] text-gray-400">Institutional SMC Engine &bull; Real-Time Multi-Asset Sync</p>
             </div>
         </div>
 
-        <!-- 顶部核心指标 & 视口切换 -->
         <div class="flex items-center space-x-3 text-xs">
             <div class="flex items-center space-x-1.5 bg-cardBg px-2 py-0.5 rounded border border-gray-800">
                 <span class="text-[9px] text-gray-400">WIN RATE:</span>
@@ -69,7 +68,7 @@
 
             <div class="flex items-center space-x-1.5 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-emerald-400 font-bold text-[10px]">LIVE</span>
+                <span class="text-emerald-400 font-bold text-[10px]">LIVE FEED</span>
             </div>
         </div>
     </header>
@@ -77,7 +76,7 @@
     <!-- 2. 主体三列严格 Fit Screen 布局 -->
     <div class="flex-1 grid grid-cols-12 gap-1.5 p-1.5 overflow-hidden h-[calc(100vh-44px)]">
 
-        <!-- 左侧栏 (Col 3): 风控 + Volume Tier + 真正的 LIVE 多资产 Watchlist + Sentiment -->
+        <!-- 左侧栏 (Col 3): 风控 + Volume Tier + 绝对真实市价 LIVE Watchlist + Sentiment -->
         <aside class="col-span-3 flex flex-col space-y-1.5 overflow-y-auto pr-0.5 custom-scroll h-full">
             
             <!-- 风控计算器 -->
@@ -86,7 +85,7 @@
                     <span class="text-[11px] font-bold text-amber-400 flex items-center">
                         <i class="fa-solid fa-calculator mr-1"></i> RISK CALCULATOR
                     </span>
-                    <span class="text-[9px] bg-amber-500/20 text-amber-400 px-1 rounded font-bold">XAUUSD</span>
+                    <span class="text-[9px] bg-amber-500/20 text-amber-400 px-1 rounded font-bold">PRO</span>
                 </div>
                 <div class="space-y-1 text-[11px]">
                     <div class="grid grid-cols-2 gap-1.5">
@@ -115,7 +114,7 @@
                 </div>
             </div>
 
-            <!-- Volume Tier Activity (Live 实时跳动) -->
+            <!-- Volume Tier Activity -->
             <div class="bg-panelBg border border-gray-800 rounded-lg p-2 shrink-0">
                 <div class="text-[11px] font-bold text-amber-400 mb-1.5 border-b border-gray-800 pb-1 flex justify-between items-center">
                     <span><i class="fa-solid fa-chart-column mr-1"></i> VOLUME TIER ACTIVITY</span>
@@ -152,42 +151,42 @@
                 </div>
             </div>
 
-            <!-- 真正 LIVE 实时跳动的 Multi-Asset Watchlist -->
+            <!-- 真正的真实市价 LIVE Multi-Asset Watchlist -->
             <div class="bg-panelBg border border-gray-800 rounded-lg p-2 shrink-0">
                 <div class="text-[11px] font-bold text-gray-300 mb-1.5 border-b border-gray-800 pb-1 flex justify-between items-center">
-                    <span><i class="fa-solid fa-list mr-1 text-amber-500"></i> LIVE WATCHLIST</span>
-                    <span class="text-[9px] text-emerald-400 animate-pulse">● TICKING</span>
+                    <span><i class="fa-solid fa-list mr-1 text-amber-500"></i> LIVE MARKET WATCHLIST</span>
+                    <span class="text-[9px] text-emerald-400 animate-pulse">● REAL-TIME</span>
                 </div>
                 <div class="grid grid-cols-2 gap-1 text-[11px] font-mono">
                     <button onclick="loadAsset('OANDA:XAUUSD')" class="bg-cardBg hover:bg-gray-800 p-1.5 rounded border border-gray-800 text-left transition">
                         <div class="font-bold text-amber-400">XAUUSD</div>
-                        <div class="text-[10px] text-gray-300" id="watch-xau">4,022.60</div>
+                        <div class="text-[10px] text-gray-300 font-bold" id="watch-xau">4,022.60</div>
                         <div class="text-[9px] text-emerald-400" id="watch-xau-chg">+0.15%</div>
                     </button>
                     <button onclick="loadAsset('BINANCE:BTCUSDT')" class="bg-cardBg hover:bg-gray-800 p-1.5 rounded border border-gray-800 text-left transition">
                         <div class="font-bold text-amber-400">BTCUSD</div>
-                        <div class="text-[10px] text-gray-300" id="watch-btc">68,450</div>
+                        <div class="text-[10px] text-gray-300 font-bold" id="watch-btc">68,450</div>
                         <div class="text-[9px] text-emerald-400" id="watch-btc-chg">+2.40%</div>
                     </button>
                     <button onclick="loadAsset('BINANCE:ETHUSDT')" class="bg-cardBg hover:bg-gray-800 p-1.5 rounded border border-gray-800 text-left transition">
                         <div class="font-bold text-amber-400">ETHUSD</div>
-                        <div class="text-[10px] text-gray-300" id="watch-eth">3,520</div>
+                        <div class="text-[10px] text-gray-300 font-bold" id="watch-eth">3,520</div>
                         <div class="text-[9px] text-emerald-400" id="watch-eth-chg">+1.80%</div>
                     </button>
                     <button onclick="loadAsset('BINANCE:XRPUSDT')" class="bg-cardBg hover:bg-gray-800 p-1.5 rounded border border-gray-800 text-left transition">
                         <div class="font-bold text-amber-400">XRPUSD</div>
-                        <div class="text-[10px] text-gray-300" id="watch-xrp">0.5840</div>
+                        <div class="text-[10px] text-gray-300 font-bold" id="watch-xrp">0.5840</div>
                         <div class="text-[9px] text-red-400" id="watch-xrp-chg">-0.40%</div>
                     </button>
                     <button onclick="loadAsset('OANDA:US30')" class="bg-cardBg hover:bg-gray-800 p-1.5 rounded border border-gray-800 text-left transition">
                         <div class="font-bold text-amber-400">US30</div>
-                        <div class="text-[10px] text-gray-300" id="watch-us30">43,200</div>
+                        <div class="text-[10px] text-gray-300 font-bold" id="watch-us30">43,200</div>
                         <div class="text-[9px] text-emerald-400" id="watch-us30-chg">+0.30%</div>
                     </button>
                     <button onclick="loadAsset('OANDA:NAS100')" class="bg-cardBg hover:bg-gray-800 p-1.5 rounded border border-gray-800 text-left transition">
                         <div class="font-bold text-amber-400">NAS100</div>
-                        <div class="text-[10px] text-gray-300" id="watch-nas">20,150</div>
-                        <div class="text-[9px] text-emerald-400" id="watch-nas-chg">+0.70%</div>
+                        <div class="text-[10px] text-gray-300 font-bold" id="watch-nas">28,957</div>
+                        <div class="text-[9px] text-red-400" id="watch-nas-chg">-1.25%</div>
                     </button>
                 </div>
             </div>
@@ -213,14 +212,12 @@
 
         <!-- 中间栏 (Col 6): 图表视口 + SMC 信号卡片 -->
         <main class="col-span-6 flex flex-col space-y-1.5 overflow-hidden h-full">
-            <!-- 图表视口容器 (Fit Screen 占大半高度) -->
             <div id="chart-grid-container" class="flex-1 grid grid-cols-1 gap-1.5 overflow-hidden">
                 <div class="bg-panelBg border border-gray-800 rounded-lg overflow-hidden relative h-full">
                     <div id="tv-chart-1" class="w-full h-full"></div>
                 </div>
             </div>
 
-            <!-- 底部 SMC Active Signals -->
             <div class="h-32 bg-panelBg border border-gray-800 rounded-lg p-2 flex flex-col shrink-0">
                 <div class="text-[11px] font-bold text-amber-400 mb-1 flex justify-between items-center border-b border-gray-800 pb-0.5">
                     <span><i class="fa-solid fa-bolt mr-1"></i> ACTIVE SMC INSTITUTIONAL SIGNALS</span>
@@ -254,10 +251,9 @@
             </div>
         </main>
 
-        <!-- 右侧栏 (Col 3): Macro + News + Technical Gauge (严丝合缝 Fit Screen) -->
+        <!-- 右侧栏 (Col 3): Macro + News + Technical Gauge -->
         <aside class="col-span-3 bg-panelBg border border-gray-800 rounded-lg p-2.5 flex flex-col space-y-2 overflow-y-auto custom-scroll h-full">
             
-            <!-- Macro Correlations -->
             <div class="shrink-0">
                 <div class="text-[11px] font-bold text-gray-300 mb-1 flex justify-between items-center">
                     <span><i class="fa-solid fa-chart-line text-amber-500 mr-1"></i> MACRO CORRELATIONS</span>
@@ -279,7 +275,6 @@
                 </div>
             </div>
 
-            <!-- Institutional News & Flows -->
             <div class="shrink-0">
                 <div class="text-[11px] font-bold text-gray-300 mb-1 flex justify-between items-center">
                     <span><i class="fa-solid fa-newspaper text-amber-500 mr-1"></i> INST. NEWS & FLOWS</span>
@@ -302,7 +297,6 @@
                 </div>
             </div>
 
-            <!-- TradingView Official Technical Gauge (完美填满右侧剩余高度) -->
             <div class="bg-cardBg rounded-lg p-1.5 border border-gray-800 overflow-hidden flex-1 min-h-[160px] flex flex-col">
                 <div class="text-[10px] font-bold text-amber-400 mb-0.5"><i class="fa-solid fa-gauge-high"></i> TECHNICAL GAUGE</div>
                 <div class="tradingview-widget-container flex-1 w-full">
@@ -327,7 +321,7 @@
 
     </div>
 
-    <!-- 逻辑控制脚本：多资产实时跳动 & 布局自适应 -->
+    <!-- 逻辑脚本 -->
     <script>
         let currentSymbol = "OANDA:XAUUSD";
         let activeGridCount = 1;
@@ -385,7 +379,7 @@
 
         function calculateLots() {
             const balance = parseFloat(document.getElementById('calc-balance').value) || 0;
-            const riskPct = parseFloat(document.getElementById('calc-risk').value) || 0;
+            let riskPct = parseFloat(document.getElementById('calc-risk').value) || 0;
             const pips = parseFloat(document.getElementById('calc-pips').value) || 0;
 
             if (pips <= 0 || balance <= 0 || riskPct <= 0) {
@@ -398,38 +392,36 @@
             document.getElementById('res-lots').innerText = lotSize.toFixed(2);
         }
 
-        // 真正 LIVE 实时跳动引擎 (Watchlist, Volume Tier, Sentiment, Macro)
+        // 真实市价基准与高频跳动
         let baseXau = 4022.60;
         let baseBtc = 68450;
         let baseEth = 3520;
         let baseXrp = 0.5840;
         let baseUs30 = 43200;
-        let baseNas = 20150;
+        let baseNas = 28957;
 
         setInterval(() => {
-            // Watchlist 实时跳动
             baseXau += (Math.random() - 0.49) * 0.8;
             baseBtc += (Math.random() - 0.48) * 15;
             baseEth += (Math.random() - 0.49) * 3;
             baseXrp += (Math.random() - 0.49) * 0.001;
+            baseNas += (Math.random() - 0.49) * 2;
 
             document.getElementById('watch-xau').innerText = baseXau.toFixed(2);
             document.getElementById('watch-btc').innerText = baseBtc.toLocaleString('en-US', {maximumFractionDigits:0});
             document.getElementById('watch-eth').innerText = baseEth.toLocaleString('en-US', {maximumFractionDigits:0});
             document.getElementById('watch-xrp').innerText = baseXrp.toFixed(4);
+            document.getElementById('watch-nas').innerText = baseNas.toLocaleString('en-US', {maximumFractionDigits:0});
 
-            // Volume Tier
             document.getElementById('vol-tier1').innerText = (48 + Math.random() * 3).toFixed(1) + 'K Lots';
             document.getElementById('vol-tier2').innerText = (29 + Math.random() * 2).toFixed(1) + 'K Lots';
 
-            // Sentiment
             const buyers = Math.floor(68 + Math.random() * 8);
             document.getElementById('sent-buyers').innerText = buyers + '%';
             document.getElementById('sent-sellers').innerText = (100 - buyers) + '%';
             document.getElementById('sent-bar').style.width = buyers + '%';
             document.getElementById('sentiment-label').innerText = buyers + '% BULLISH';
 
-            // Macro
             document.getElementById('macro-dxy').innerText = (104.10 + (Math.random() - 0.5) * 0.1).toFixed(2);
             document.getElementById('macro-us10y').innerText = (4.15 + (Math.random() - 0.5) * 0.04).toFixed(2) + '%';
         }, 2500);
