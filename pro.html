@@ -9,7 +9,7 @@
 <div class="sectionhead"><h2>CRYPTO MARKETS</h2><span>公开交易所行情 · WebSocket 推送</span></div><section class="grid" id="cryptoGrid"></section>
 <div class="sectionhead"><h2>PRECIOUS METALS</h2><span>公开黄金/白银现货参考价 · USD / troy oz</span></div><section class="grid" id="metalGrid"></section>
 <section class="lower"><div class="panel block"><div class="blockhead"><h3>BTC PRICE TRACE</h3><div class="tabs"><button class="tab active" data-range="live">LIVE</button><button class="tab" data-range="1h">1H</button><button class="tab" data-range="24h">24H</button></div></div><div class="chartarea" id="mainChart"><div class="empty">等待实时成交数据，收到数据后绘图。</div></div><div class="chartnote" id="chartNote">图表只绘制实际收到的行情点；不会生成演示 K 线。</div></div><div class="panel block"><div class="blockhead"><h3>MARKET PULSE</h3><span class="mini">基于实际价格变化</span></div><div id="pulse"><div class="empty">等待有效行情后计算方向。此处不是机构资金流数据。</div></div></div></section>
-<div class="disclaimer"><b>数据说明：</b>Crypto 使用 Binance 公开市场 WebSocket（无需 API Key），价格随交易所消息更新，通常约每秒推送；若网络、地区或服务阻挡连接，会显示 OFFLINE。黄金/白银使用 XAUS 公共现货数据源，数据源可能按分钟更新，不能保证每秒变化，因此不会把它标成 LIVE，除非数据源明确报告为最新。价格不等于任何经纪商的可成交报价。此页面仅供市场观察，不执行交易。</div>
+<div class="disclaimer"><b>数据说明：</b>Crypto 使用 Binance 公开市场 WebSocket（无需 API Key），价格随交易所消息更新，通常约每秒推送；若网络、地区或服务阻挡连接，会显示 OFFLINE。黄金/白银使用 XAUS 公共现货数据源；页面会请求新响应并检查更新时间与来源状态。黄金数据通常约每 60 秒缓存更新，白银没有独立来源时间戳，因此 LIVE 只代表 API 报告较新，不代表每秒跳动。价格不等于任何经纪商的可成交报价。此页面仅供市场观察，不执行交易。</div>
 <div class="footer"><span>SKYLAB FX · NO ORDER EXECUTION</span><span id="lastCheck">尚未检查数据</span><span><a class="link" href="https://github.com/skylab-fx/sKyLaB---FX-" target="_blank" rel="noopener">GitHub Repository</a></span></div></div>
 <script>
 (()=>{"use strict";const $=id=>document.getElementById(id),fmt=(v,n=2)=>Number.isFinite(v)?v.toLocaleString("en-US",{minimumFractionDigits:n,maximumFractionDigits:n}):"—",time=ts=>ts?new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"}):"—";
@@ -23,7 +23,65 @@ if(a.s==="BTCUSDT"){$("heroPrice").textContent="$"+fmt(price,2);$("heroChange").
 function connectCrypto(){try{if(state.ws)try{state.ws.close()}catch(e){}const streams=assets.map(a=>a.s.toLowerCase()+"@ticker").join("/"),ws=new WebSocket("wss://data-stream.binance.vision/stream?streams="+streams);state.ws=ws;ws.onopen=()=>{ $("cryptoStatus").textContent="CONNECTED";updateOverall()};ws.onmessage=e=>{try{const msg=JSON.parse(e.data),d=msg.data,a=assets.find(x=>x.s===d?.s);if(a)updateCrypto(a,d)}catch(err){}};ws.onerror=()=>{$("cryptoStatus").textContent="OFFLINE";updateOverall()};ws.onclose=()=>{$("cryptoStatus").textContent="OFFLINE";$("cryptoUpdated").textContent="连接断开，5 秒后重试";updateOverall();setTimeout(connectCrypto,5000)}}catch(e){$("cryptoStatus").textContent="OFFLINE";setTimeout(connectCrypto,5000)}}
 function renderChart(){const h=state.history;if(!h||h.length<2){$("mainChart").innerHTML='<div class="empty">尚未收到足够的真实行情点。</div>';return}const vals=h.map(x=>x.p),w=800,hh=210,p=12,min=Math.min(...vals),max=Math.max(...vals),r=max-min||1,pts=vals.map((v,i)=>`${p+i*(w-p*2)/(vals.length-1)},${hh-p-(v-min)*(hh-p*2)/r}`).join(" "),color=vals.at(-1)>=vals[0]?"#31d6a0":"#ff647c";$("mainChart").innerHTML=`<svg viewBox="0 0 ${w} ${hh}" preserveAspectRatio="none"><g stroke="#233146"><path d="M0 35H800 M0 85H800 M0 135H800 M0 185H800" fill="none"/></g><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;$("chartNote").textContent=`实际收到 ${h.length} 个 BTC 行情点 · 最近 ${fmt(vals.at(-1),2)} USDT · 不是历史 K 线`}
 function renderPulse(){const rows=assets.map(a=>{const d=state.crypto[a.s];if(!d||d.history.length<2)return {a,known:false,pct:0};const prev=d.history[Math.max(0,d.history.length-10)].p;return {a,known:true,pct:(d.price-prev)/prev*100}});$("pulse").innerHTML=rows.map(r=>`<div class="flowrow"><div><b>${r.a.name} <span class="mini">${r.a.ticker}</span></b><small>${r.known?(r.pct>=0?"+":"")+fmt(r.pct,3)+"% · 短窗价格方向":"等待更多数据"}</small><div class="flowbar"><i style="width:${r.known?Math.min(100,Math.max(5,Math.abs(r.pct)*18)):0}%;background:${r.pct>=0?'#31d6a0':'#ff647c'}"></i></div></div><strong class="${r.pct>=0?'up':'down'}">${r.known?(r.pct>=0?'↑':'↓'):'—'}</strong></div>`).join("")+'<div class="chartnote">此处只表示近期价格方向，不代表真实资金净流入或机构订单。</div>'}
-async function fetchMetals(){const now=Date.now();try{const res=await fetch("https://xaus.com/api/v1/spot",{cache:"no-store"});if(!res.ok)throw Error("HTTP "+res.status);const j=await res.json(),info=j.data_state||{},list=[{a:metals[0],price:j.xau?.price??j.spot_usd_oz},{a:metals[1],price:j.xag?.price??j.silver?.price}];let any=false;for(const x of list){const price=Number(x.price);if(!Number.isFinite(price)||price<=0)continue;any=true;const ts=Date.parse(info.as_of||j.updated_at||""),age=Number.isFinite(Number(info.age_seconds))?Number(info.age_seconds):(Number.isFinite(ts)?Math.max(0,(now-ts)/1000):Infinity),status=info.status==="fresh"&&age<180?"LIVE":Number.isFinite(age)&&age<3600?"DELAYED":"STALE";state.metals[x.a.s]={price,ts:Number.isFinite(ts)?ts:now,status};$("price-"+x.a.s).textContent="$"+fmt(price,x.a.digits);$("change-"+x.a.s).textContent=status==="LIVE"?"来源报告最新":status==="DELAYED"?"公开报价可能延迟":"报价已过期";$("change-"+x.a.s).className=status==="LIVE"?"up":"";$("time-"+x.a.s).textContent=Number.isFinite(ts)?time(ts):"时间未提供";setStatus("status-"+x.a.s,status)}if(!any)throw Error("No spot values");state.lastMetal=now;const all=Object.values(state.metals);$("metalStatus").textContent=all.some(x=>x.status==="STALE")?"STALE":all.every(x=>x.status==="LIVE")?"LIVE":"DELAYED";$("metalUpdated").textContent="来源更新时间 "+(j.updated_at?time(Date.parse(j.updated_at)):"未提供")}catch(e){metals.forEach(a=>{if(!state.metals[a.s])setStatus("status-"+a.s,"OFFLINE");else if(Date.now()-state.lastMetal>180000)setStatus("status-"+a.s,"STALE")});$("metalStatus").textContent=state.lastMetal?"STALE":"OFFLINE";$("metalUpdated").textContent="公开报价源暂时不可用"}updateOverall()}
+async function fetchMetals(){
+  const now=Date.now();
+  try{
+    // The "fresh" parameter bypasses the public CDN cache; compact=1 reduces payload size.
+    const res=await fetch("https://xaus.com/api/v1/spot?compact=1&fresh="+now,{cache:"no-store"});
+    if(!res.ok)throw Error("HTTP "+res.status);
+    const j=await res.json(),info=j.data_state||{};
+    const responseTs=Date.parse(j.updated_at||"");
+    const goldTs=Date.parse(j.price_as_of||info.as_of||j.updated_at||"");
+    const responseAge=Number.isFinite(responseTs)?Math.max(0,(now-responseTs)/1000):Infinity;
+    const goldAge=Number.isFinite(Number(info.age_seconds)) && info.age_seconds!==null
+      ? Math.max(0,Number(info.age_seconds))
+      : (Number.isFinite(goldTs)?Math.max(0,(now-goldTs)/1000):Infinity);
+
+    const goldPrice=Number(j.spot_usd_oz??j.xau?.price);
+    const silverPrice=Number(j.silver_usd_oz);
+    const goldStatus=info.status==="fresh" && goldAge<180 && responseAge<180
+      ? "LIVE"
+      : (Number.isFinite(goldAge)&&goldAge<3600 ? "DELAYED" : "STALE");
+    // XAUS documents silver_source but not a separate silver timestamp; only mark it LIVE
+    // when the API response is recent and a source is explicitly identified.
+    const silverStatus=Number.isFinite(silverPrice)&&silverPrice>0
+      ? ((j.silver_source && responseAge<180) ? "LIVE"
+        : (responseAge<3600 ? "DELAYED" : "STALE"))
+      : "OFFLINE";
+    const list=[
+      {a:metals[0],price:goldPrice,ts:goldTs,status:goldStatus},
+      {a:metals[1],price:silverPrice,ts:responseTs,status:silverStatus}
+    ];
+    let any=false;
+    for(const x of list){
+      const price=Number(x.price);
+      if(!Number.isFinite(price)||price<=0){
+        setStatus("status-"+x.a.s,"OFFLINE");
+        continue;
+      }
+      any=true;
+      state.metals[x.a.s]={price,ts:Number.isFinite(x.ts)?x.ts:now,status:x.status};
+      $("price-"+x.a.s).textContent="$"+fmt(price,x.a.digits);
+      $("change-"+x.a.s).textContent=x.status==="LIVE"?"来源报告最新":x.status==="DELAYED"?"公开报价可能延迟":"报价已过期";
+      $("change-"+x.a.s).className=x.status==="LIVE"?"up":"";
+      $("time-"+x.a.s).textContent=Number.isFinite(x.ts)?time(x.ts):"时间未提供";
+      setStatus("status-"+x.a.s,x.status);
+    }
+    if(!any)throw Error("No valid spot values");
+    state.lastMetal=now;
+    const statuses=list.filter(x=>Number.isFinite(Number(x.price))&&Number(x.price)>0).map(x=>x.status);
+    $("metalStatus").textContent=statuses.length&&statuses.every(s=>s==="LIVE")?"LIVE":statuses.some(s=>s==="LIVE")?"LIVE":statuses.some(s=>s==="DELAYED")?"DELAYED":"STALE";
+    $("metalUpdated").textContent="API 更新时间 "+(Number.isFinite(responseTs)?time(responseTs):"未提供");
+  }catch(e){
+    metals.forEach(a=>{
+      if(!state.metals[a.s])setStatus("status-"+a.s,"OFFLINE");
+      else if(Date.now()-state.lastMetal>180000)setStatus("status-"+a.s,"STALE");
+    });
+    $("metalStatus").textContent=state.lastMetal?"STALE":"OFFLINE";
+    $("metalUpdated").textContent="公开报价源暂时不可用";
+  }
+  updateOverall();
+}
 function updateOverall(){const fresh=state.lastCrypto&&Date.now()-state.lastCrypto<15000,vals=Object.values(state.metals);let label="OFFLINE",cls="offline";if(fresh||vals.some(x=>x.status==="LIVE")){label="LIVE";cls="live"}else if(vals.some(x=>x.status==="DELAYED")){label="DELAYED";cls="delayed"}else if(state.lastCrypto||state.lastMetal){label="STALE";cls="stale"}$("overallStatus").textContent=label;$("overallDot").className="dot "+cls;if(!fresh&&state.lastCrypto&&Date.now()-state.lastCrypto>15000){$("cryptoStatus").textContent="STALE";assets.forEach(a=>{if(state.crypto[a.s])setStatus("status-"+a.s,"STALE")})}}
 document.querySelectorAll("[data-range]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-range]").forEach(x=>x.classList.toggle("active",x===b));state.range=b.dataset.range;const cut=state.range==="1h"?Date.now()-3600000:state.range==="24h"?Date.now()-86400000:0;state.history=(state.crypto.BTCUSDT?.history||[]).filter(x=>x.t>=cut);renderChart()}));
 $("refreshBtn").addEventListener("click",()=>{fetchMetals();if(!state.ws||state.ws.readyState>1)connectCrypto()});setInterval(()=>{if(state.lastCrypto&&Date.now()-state.lastCrypto>15000)updateOverall()},3000);fetchMetals();setInterval(fetchMetals,60000);connectCrypto()})();
